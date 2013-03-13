@@ -1,3 +1,8 @@
+// AMD Wrapped!
+// IMPORATNT: We have to reset Underscores template settings right before
+// precompiling the templates (search for JST). This is because edgespring
+// decided it could change the template settings for itself.
+
 // This is the annotated source code for
 // [VisualSearch.js](http://documentcloud.github.com/visualsearch/),
 // a rich search box for real data.
@@ -11,6 +16,9 @@
  *  For all details and documentation:
  *  http://documentcloud.github.com/visualsearch
  */
+
+define(['backbone'],
+function(Backbone) {
 
 (function() {
 
@@ -1921,7 +1929,25 @@ VS.model.SearchQuery = Backbone.Collection.extend({
 (function(){
 window.JST = window.JST || {};
 
+/* Begin MobileNow customizations */
+
+var $ = window.jQuery;
+
+var origTemplateSettings = $.extend(true, {}, _.templateSettings);
+
+// It's stupid that we need this, but other libraries feel like they can
+// modify global library settings for themselves.
+_.templateSettings = {
+    evaluate    : /<%([\s\S]+?)%>/g,
+    interpolate : /<%=([\s\S]+?)%>/g,
+    escape      : /<%-([\s\S]+?)%>/g
+};
+
+/* End MobileNow customizations */
+
 window.JST['search_box'] = _.template('<div class="VS-search">\n  <div class="VS-search-box-wrapper VS-search-box">\n    <div class="VS-icon VS-icon-search"></div>\n    <div class="VS-placeholder"></div>\n    <div class="VS-search-inner"></div>\n    <div class="VS-icon VS-icon-cancel VS-cancel-search-box" title="clear search"></div>\n  </div>\n</div>');
 window.JST['search_facet'] = _.template('<% if (model.has(\'category\')) { %>\n  <div class="category"><%= model.get(\'category\') %>:</div>\n<% } %>\n\n<div class="search_facet_input_container">\n  <input type="text" class="search_facet_input ui-menu VS-interface" value="" />\n</div>\n\n<div class="search_facet_remove VS-icon VS-icon-cancel"></div>');
 window.JST['search_input'] = _.template('<input type="text" class="ui-menu" />');
 })();
+
+});
